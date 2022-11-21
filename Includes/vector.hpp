@@ -6,7 +6,7 @@
 /*   By: iderighe <iderighe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 17:09:51 by iderighe          #+#    #+#             */
-/*   Updated: 2022/10/29 15:18:55 by iderighe         ###   ########.fr       */
+/*   Updated: 2022/11/21 12:17:33 by iderighe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,11 @@ croître sans avoir besoin de free / reallouer ! */
 # include <iostream>
 # include <memory>
 # include "iterator.hpp"
+# include "enable_if.hpp"
+# include "is_integral.hpp"
 # include "random_access_iterator.hpp"
+# include "reverse_iterator.hpp"
+# include "lexicographical_compare.hpp"
 
 /* Namespace provides the scope where we can define or declare identifier. Avoid
 name collision (ex : if 2 libraries have the same name for a fonction...) No
@@ -41,18 +45,14 @@ namespace ft
 			typedef typename allocator_type::const_pointer						const_pointer;
 			typedef typename ft::random_access_iterator<T>						iterator;
 			typedef typename ft::random_access_iterator<const T>				const_iterator;
-			// typedef typename ft::reverse_iterator<iterator>						reverse_iterator;
-			// typedef typename ft::reverse_iterator<const iterator>				const_reverse_iterator;
-			// typedef typename ft::iterator_traits<iterator>::difference_type		difference_type;
-
-
+			typedef typename ft::reverse_iterator<iterator>						reverse_iterator;
+			typedef typename ft::reverse_iterator<const iterator>				const_reverse_iterator;
 			
 		protected:
 			allocator_type	_alloc;		// ALLOCATEUR !!
-			// value_type		*_type;		// type des données qu'on met dans le vecteur (int, char...)
 			size_type		_size;		// nb d'elements dans le vector 
 			size_type		_capacity;	// nb d'elements possibles (en fct de la mémoire allouée)
-			pointer			_array;
+			pointer			_array;		// pointeur vers les données du vector
 			
 		public:
 		
@@ -60,16 +60,16 @@ namespace ft
 		//                                COPLIEN                             //
 		//--------------------------------------------------------------------//
 
-					// Constructors (4)
-					// Destructor
-					// operator=
+					// Constructors (4)		OK
+					// Destructor			OK
+					// operator=			OK
 
 		//------------------------- Constructeurs ----------------------------//
 		/*Il y a quatre constructeurs:
 
 		1) un contructeur par défaut (càd sans argument pour simplement créer le vecteur) 
 		2) un constructeur avec 1er param = taille de base, 2eme param = valeur a mettre dans tout les cas (si elle est absente
-		la valeur du constructeur par default sera utilisée
+			la valeur du constructeur par default sera utilisée
 		3) un constructeur avec une plage d'iterateur a mettre a l'iterieur a l'initalisation
 		4) un constructeur par copie
 
@@ -80,11 +80,10 @@ namespace ft
 			explicit vector( const Allocator& alloc = Allocator() )
 			{
 				_alloc = alloc;
-				// _type = 0;
 				_size = 0;
 				_capacity = 0;
 				_array = NULL;
-				std::cout << "Constructeur par défaut : \n_size = " << size() << "\n_capacity = " << capacity() << std::endl; 
+				std::cout << "Constructeur par défaut : \n- size = " << size() << "\n- capacity = " << capacity() << std::endl; 
 			}
 			
 		// ----- 2) Constructs the container with count copies of elements with value value ----- //
@@ -94,7 +93,7 @@ namespace ft
 				_size = count;
 				_capacity = count;
 				_array = NULL;
-				/* L'objet _alloc, de classe Allocator, va utiliser les fct de sa classe !
+				/* L'objet _alloc, de classe Allocator, va utiliser les fct de sa classe !s
 				1) allocate(std::size_type count, const void * hint = 0)
 						|-> Allocates n * sizeof(T) bytes of uninitialized storage by calling ::operator new(std::size_t). So this function creates an array of type T[n] in the storage
 				2) construct(void construct pointer p, const_reference val)
@@ -105,21 +104,36 @@ namespace ft
 					for (size_type i = 0; i < count; i++)
 						this->_alloc.construct(this->_array + i, value);
 				}
-				// _type = _alloc.allocate(count);
-				// for (size_type i = 0; i < count; i++)
-				// 	_alloc.construct(_type + i, value);
-				std::cout << "Constructeur par param : \n_size = " << size() << "\n_capacity = " << capacity() << std::endl;
+				std::cout << "Constructeur par param : \n- size = " << size() << "\n- capacity = " << capacity() << "\n- value = " << value << std::endl;
 			}
 			
 		// ----- 3) Constructs the container with the contents of the range [first, last] ----- //
 			template< class InputIterator >
-			vector( InputIterator first, InputIterator last, const Allocator& alloc = Allocator() )
+			vector( InputIterator first, InputIterator last, const Allocator& alloc = Allocator(),
+			typename ft::enable_if<!ft::is_integral<InputIterator>::value, void **>::type = 0 )
 			{
 				_alloc = alloc;
-				_size = last - first;
 				
-				_capacity = _size;
-				std::cout << "Constructeur par plage : \n_size = " << size() << "\n_capacity = " << capacity() << std::endl;
+				/*get size of the range and give it to _size and _capacity*/
+				InputIterator	tmp = first;
+				size_type		rangesize = 0;
+				for (; tmp != last; tmp++)
+					rangesize++;
+				// _size = last - first;
+				this->_size = rangesize;
+				this->_capacity = _size;
+				
+				/*allocate using allocate*/
+				_array = _alloc.allocate(this->_capacity);
+				
+				/*fill using construct*/
+				pointer 	new_array = this->_array;
+				for (;first != last; first++)
+				{
+					this->_alloc.construct(new_array, *first);
+					new_array++;
+				}
+				std::cout << "Constructeur par plage : \n- size = " << size() << "\n- capacity = " << capacity() << std::endl;
 			}
 			
 		// ----- 4) Copy constructor. Constructs the container with the copy of the contents of other. If alloc is not provided, allocator is obtained by calling std::allocator_traits<allocator_type>::select_on_container_copy_construction(other). ----- //
@@ -127,16 +141,15 @@ namespace ft
 			{
 				_alloc = other.get_allocator();
 				_size = other.size();
-				_capacity = other.capacity();
+				_capacity = other.size();
 				_array = NULL;
-				// _type = 0;
 				if (other.size() > 0)
 				{
 					this->_array = this->_alloc.allocate(this->_capacity);
 					for (size_type i = 0; i < other.size(); i++)
 						this->_alloc.construct(this->_array + i, *(other._array + i));
 				}
-				std::cout << "Constructeur par copie : \n_size = " << size() << "\n_capacity = " << capacity() << std::endl;
+				std::cout << "Constructeur par copie : \n- size = " << size() << "\n- capacity = " << capacity() << std::endl;
 			}
 		
 		//------------------------- Destructeur ----------------------------//
@@ -147,7 +160,7 @@ namespace ft
 				clear();
 				if (this->_capacity > 0)
 					this->_alloc.deallocate(this->_array, this->_capacity);
-				std::cout << "Destructor Called \n-------------------------------------------------------------" << std::endl;
+				std::cout << "Destructor Called \n----------------------------------------------------------------------------" << std::endl;
 			}
 
 		//-------------------------- Operateur = -----------------------------//
@@ -173,8 +186,8 @@ namespace ft
 
 					// begin (normal & const)	OK
 					// end (normal & const)		OK
-					// rbegin
-					// rend
+					// rbegin					OK
+					// rend						OK
 					// cbegin					C11 !
 					// cend						C11 !
 					// crbegin					C11 !
@@ -189,21 +202,36 @@ namespace ft
 			{
 				return (const_iterator(this->_array));
 			}
-			
+
 			iterator end()
 			{
 				return (iterator(this->_array + this->_size));
 			}
-			
+
 			const_iterator end() const
 			{
 				return (const_iterator(this->_array + this->_size));
 			}
 
+			reverse_iterator rbegin()
+			{
+				return (reverse_iterator(this->end()));
+			}
 
+			const_reverse_iterator rbegin() const
+			{
+				return (const_reverse_iterator(this->end()));
+			}
 
+			reverse_iterator rend()
+			{
+				return (reverse_iterator(this->begin()));
+			}
 
-
+			const_reverse_iterator rend() const
+			{
+				return (const_reverse_iterator(this->begin()));
+			}
 
 		//--------------------------------------------------------------------//
 		//                               CAPACITY                             //
@@ -312,11 +340,15 @@ namespace ft
 			reference operator[] (size_type n)
 			{
 			/* Returns a reference to the element at position n in the vector container. Does not check against bounds. */
+				if (n >= this->_size)
+					throw std::out_of_range("vector::[] -> index out of range !");
 				return (*(_array + n));
 			}
 			
 			const_reference operator[] (size_type n) const
 			{
+				if (n >= this->_size)
+					throw std::out_of_range("vector::[] -> index out of range !");
 				return (*(_array + n));
 			}
 
@@ -377,10 +409,10 @@ namespace ft
 					// assign (2 fct : fill & range !)			OK
 					// push_back								OK
 					// pop_back									OK
-					// insert (3 fct : single & fill & range)
-					// erase (2 fct : single & range)
-					// swap
-					// clear
+					// insert (3 fct : single & fill & range)	OK
+					// erase (2 fct : single & range)			OK
+					// swap										OK
+					// clear									OK
 					// emplace									C11 !
 					// emplace_back								C11 !
 
@@ -403,11 +435,12 @@ namespace ft
 			}
 
 			template <class InputIterator>
-			void assign (InputIterator first, InputIterator last)
+			void assign (InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value, void **>::type = 0)
 			{
 			/* prototype assign |-> range : the new contents are elements constructed from each of the elements in the
 			range between first and last, in the same order.
-			Assigns new contents to the vector, replacing its current contents, and modifying its size accordingly.*/
+			Assigns new contents to the vector, replacing its current contents, and modifying its size accordingly.
+			ATTENTION : need enable_if to differenciate fill and range assign !*/
 				clear();
 				insert(begin(), first, last);
 			}
@@ -432,15 +465,14 @@ namespace ft
 				}
 			}
 
-			iterator insert (iterator position, const value_type& val)
+			iterator insert(iterator position, const value_type& val)
 			{
 			/* The vector is extended by inserting new elements before the element at the specified position,
 			effectively increasing the container size by the number of elements inserted.
 			This causes an automatic reallocation of the allocated storage space if -and only if- the new vector
 			size surpasses the current vector capacity. */
 			
-			/* insert one element of value val in position position */
-				
+			/* prototype insert |-> single : insert one element of value val before position */
 				difference_type diff = position - begin();
 				if (this->_size + 1 > this->_capacity)
 					reserve(reserve_calc(this->_size + 1));
@@ -459,32 +491,62 @@ namespace ft
 				return (begin() + diff);
 			}
 
-			void insert (iterator position, size_type n, const value_type& val)
+			void insert(iterator position, size_type n, const value_type& val)
 			{
-				if (n > capacity())
-					reserve(reserve_calc(n));
+			/* prototype insert |-> fill : insert n element of value val before position */
+				if (n == 0)
+					return;
 				difference_type diff = position - begin();
-				pointer index = _array + _size + n;
-				pointer stop = _array + diff + n;
-
+				if (this->_size + n > this->_capacity)
+					reserve(reserve_calc(this->_size + n));
+				pointer index = _array + _size + n - 1;
+				pointer stop = _array + diff + n - 1;
 			/* on remplit par la fin ! */
 				for (; index != stop; index--)
 				{
-					this->_alloc.construct(index, *(index - 1));
-					this->_alloc.destroy(index - 1);
+					this->_alloc.construct(index, *(index - n));
+					this->_alloc.destroy(index - n);
 				}
-			/* on insère les elements en position */
-				for (size_type i = diff; i < n; i++)
-					this->_alloc.construct(i, val);
-				_size = _size + n;
-				return (begin() + diff);
+			/* on insère les elements en position depuis la fin */
+				this->_size += n;
+				while (n > 0)
+				{
+					this->_alloc.construct(this->_array + diff - 1 + n, val);
+					n--;
+				}
 			}
 
-			// template <class InputIterator>
-			// void insert (iterator position, InputIterator first, InputIterator last)
-			// {
-				
-			// }
+			template <class InputIterator>
+			void insert (iterator position, InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value, void **>::type = 0)
+			{
+			/* prototype insert |-> range : insert a range of elements before position. ATTENTION : need enable_if
+			to differenciate fill and range insert ! */
+				if (first == last)
+					return;
+				difference_type diff = position - begin();
+			/*get size of range*/
+				size_type rangesize = 0;
+				for (; first != last; first++)
+					rangesize++;
+				if (this->_size + rangesize > this->_capacity)
+					reserve(reserve_calc(this->_size + rangesize));
+				pointer index = _array + _size + rangesize - 1;
+				pointer stop = _array + diff + rangesize - 1;
+			/* on remplit par la fin ! */
+				for (; index != stop; index--)
+				{
+					this->_alloc.construct(index, *(index - rangesize));
+					this->_alloc.destroy(index - rangesize);
+				}
+				this->_size += rangesize;
+			/* on insère les elements en position depuis la fin */
+				while (rangesize > 0)
+				{
+					last--;
+					this->_alloc.construct(this->_array + diff - 1 + rangesize, *last);
+					rangesize--;
+				}
+			}
 
 			iterator erase (iterator position)
 			{
@@ -502,18 +564,35 @@ namespace ft
 				return (position);
 			}
 
-			// iterator erase (iterator first, iterator last)
-			// {
-			// 	for (first; first != last; last--)
-			// 		erase(first);
-			// 	return (first);
-			// }
+			iterator erase (iterator first, iterator last)
+			{
+				for (; first != last; last--)
+					erase(first);
+				return (first);
+			}
 
+			void swap (vector& x)
+			{
+			/* Exchanges the content of the container by the content of x, which is another vector object of the same type.
+			Sizes may differ. After the call to this member function, the elements in this container are those which were
+			in x before the call, and the elements of x are those which were in this. All iterators, references and pointers
+			remain valid for the swapped objects. */
 
+			/* ATTENTION : All iterators, pointers and references referring to elements in both containers remain valid, and are now
+			referring to the same elements they referred to before the call, but in the other container, where they now iterate !*/
 
-void swap (vector& x);
-
-
+				size_type tmp_size = x._size;
+				x._size = this->_size;
+				this->_size = tmp_size;
+				
+				size_type tmp_capacity = x._capacity;
+				x._capacity = this->_capacity;
+				this->_capacity = tmp_capacity;
+				
+				pointer tmp_array = x._array;
+				x._array = this->_array;
+				this->_array = tmp_array;
+			}
 
 			void clear()
 			{
@@ -524,10 +603,6 @@ void swap (vector& x);
 					this->_alloc.destroy(this->_array + i);
 				this->_size = 0;
 			}
-			
-// template <class... Args>iterator emplace (const_iterator position, Args&&... args);	
-
-// template <class... Args>  void emplace_back (Args&&... args);
 
 		//--------------------------------------------------------------------//
 		//                               ALLOCATOR                            //
@@ -540,6 +615,74 @@ void swap (vector& x);
 				return(_alloc);
 			}
 	};
+	
+	//----------------------------------------------------------------------//
+	//                         NON MEMBER FUNCTIONS                         //
+	//----------------------------------------------------------------------//
+
+	//--------- RELATIONAL OPERATORS ---------//
+
+	/* Performs the appropriate comparison operation between the vector containers lhs and rhs */
+
+	/*The equality comparison (operator==) is performed by first comparing sizes, and if they match, the elements
+	are compared sequentially using operator==, stopping at the first mismatch (as if using algorithm equal). */
+
+	template <class T, class Alloc>
+	bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		if (lhs.size() == rhs.size())
+		{
+			for (size_t i = 0; i < lhs.size(); i++)
+			{
+				if (lhs[i] != rhs[i])
+					return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	template <class T, class Alloc>
+	bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return !(lhs == rhs);
+	}
+
+	/* The less-than comparison (operator<) behaves as if using algorithm lexicographical_compare, which
+	compares the elements sequentially using operator< in a reciprocal manner (i.e., checking both a<b
+	and b<a) and stopping at the first occurrence. */
+
+	template <class T, class Alloc>
+	bool operator<  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+	}
+
+	template <class T, class Alloc>
+	bool operator>  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return (rhs < lhs);
+	}
+	
+	template <class T, class Alloc>
+	bool operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return !(lhs > rhs);
+	}
+
+	template <class T, class Alloc>
+	bool operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return !(lhs < rhs);
+	}
+	
+	//----------------- SWAP -----------------//
+	
+	template <class T, class Alloc>
+	void swap (vector<T,Alloc>& x, vector<T,Alloc>& y)
+	{
+		x.swap(y);
+	}
 }
 
 #endif /* VECTOR_HPP */

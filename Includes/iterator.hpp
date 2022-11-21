@@ -6,7 +6,7 @@
 /*   By: iderighe <iderighe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:29:50 by iderighe          #+#    #+#             */
-/*   Updated: 2022/10/26 12:51:26 by iderighe         ###   ########.fr       */
+/*   Updated: 2022/11/17 14:31:19 by iderighe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ namespace ft
 
 	struct random_access_iterator_tag {};
 
-	template< class Category, class T, class Distance = std::ptrdiff_t, class Pointer = T*, class Reference = T& > struct iterator
+	template< class Category, class T, class Distance = std::ptrdiff_t, class Pointer = T*, class Reference = T& >
+	struct iterator
 	{
 		typedef Category	iterator_category;	// the category of the iterator. Must be one of iterator category tags.
 		typedef T			value_type;			// the type of the values that can be obtained by dereferencing the iterator. This type should be void for output iterators.

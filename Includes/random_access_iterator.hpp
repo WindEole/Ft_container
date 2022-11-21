@@ -6,7 +6,7 @@
 /*   By: iderighe <iderighe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:28:43 by iderighe          #+#    #+#             */
-/*   Updated: 2022/10/26 12:17:00 by iderighe         ###   ########.fr       */
+/*   Updated: 2022/11/17 16:57:29 by iderighe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ namespace ft
 			};
 
 			// relational operator between const and non const iterator
-			//  must be friend to access protected _ptr in non membre functions
+			// must be friend to access protected _ptr in non membre functions
 			template <class Ite1, class Ite2>
 			friend bool operator==(const random_access_iterator<Ite1> &lhs, const random_access_iterator<Ite2> &rhs);
 
