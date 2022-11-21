@@ -6,7 +6,7 @@
 #    By: iderighe <iderighe@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/11 18:00:44 by iderighe          #+#    #+#              #
-#    Updated: 2022/10/25 11:22:40 by iderighe         ###   ########.fr        #
+#    Updated: 2022/11/17 15:42:41 by iderighe         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -57,7 +57,7 @@ fclean		:	clean
 				$(RM) $(NAME)
 
 fsa			:	fclean obj $(OBJ)
-				$(CXC) $(CFLAGS) $(CDEP) $(CFA) -o $(NAME) $(SRC)
+				$(CXC) $(CFLAGS) $(CFA) -o $(NAME) $(SRC)
 
 re			:	fclean all
 
