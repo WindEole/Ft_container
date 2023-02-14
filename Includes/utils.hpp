@@ -6,7 +6,7 @@
 /*   By: iderighe <iderighe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 14:22:25 by iderighe          #+#    #+#             */
-/*   Updated: 2022/11/08 15:28:05 by iderighe         ###   ########.fr       */
+/*   Updated: 2022/12/06 20:31:29 by iderighe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 # define UTILS_HPP
 
 # include "iterator.hpp"
+# include "pair.hpp"
+# include <functional>
 
 namespace ft
 {
@@ -28,6 +30,32 @@ namespace ft
 			ret++;
 		}
 		return ret;
+	};
+
+	template <class value_type>
+	struct Tnode
+	{
+		public:
+			value_type 		pair;
+			Tnode			*right;
+			Tnode			*left;
+			Tnode			*parent;
+
+			Tnode():
+				pair(), right(NULL), left(NULL), parent(NULL) {}
+			Tnode(value_type const &val):
+				pair(val), right(NULL), left(NULL), parent(NULL) {}
+			// Tnode(Tnode const &other):
+				// pair(other.pair), right(NULL), left(NULL), parent(NULL) {}
+	};
+
+	template <class T>
+	struct less : public std::binary_function <T,T,bool>
+	{
+		bool operator() (const T& x, const T& y) const
+		{
+			return (x < y);
+		};
 	};
 }
 

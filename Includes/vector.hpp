@@ -6,7 +6,7 @@
 /*   By: iderighe <iderighe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 17:09:51 by iderighe          #+#    #+#             */
-/*   Updated: 2022/11/21 12:17:33 by iderighe         ###   ########.fr       */
+/*   Updated: 2022/12/06 14:04:25 by iderighe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ croître sans avoir besoin de free / reallouer ! */
 # include "iterator.hpp"
 # include "enable_if.hpp"
 # include "is_integral.hpp"
-# include "random_access_iterator.hpp"
 # include "reverse_iterator.hpp"
 # include "lexicographical_compare.hpp"
 
@@ -46,7 +45,7 @@ namespace ft
 			typedef typename ft::random_access_iterator<T>						iterator;
 			typedef typename ft::random_access_iterator<const T>				const_iterator;
 			typedef typename ft::reverse_iterator<iterator>						reverse_iterator;
-			typedef typename ft::reverse_iterator<const iterator>				const_reverse_iterator;
+			typedef typename ft::reverse_iterator<const_iterator>				const_reverse_iterator;
 			
 		protected:
 			allocator_type	_alloc;		// ALLOCATEUR !!
@@ -83,7 +82,7 @@ namespace ft
 				_size = 0;
 				_capacity = 0;
 				_array = NULL;
-				std::cout << "Constructeur par défaut : \n- size = " << size() << "\n- capacity = " << capacity() << std::endl; 
+				// std::cout << "Constructeur par défaut : \n- size = " << size() << "\n- capacity = " << capacity() << std::endl; 
 			}
 			
 		// ----- 2) Constructs the container with count copies of elements with value value ----- //
@@ -104,7 +103,7 @@ namespace ft
 					for (size_type i = 0; i < count; i++)
 						this->_alloc.construct(this->_array + i, value);
 				}
-				std::cout << "Constructeur par param : \n- size = " << size() << "\n- capacity = " << capacity() << "\n- value = " << value << std::endl;
+				// std::cout << "Constructeur par param : \n- size = " << size() << "\n- capacity = " << capacity() << "\n- value = " << value << std::endl;
 			}
 			
 		// ----- 3) Constructs the container with the contents of the range [first, last] ----- //
@@ -133,7 +132,7 @@ namespace ft
 					this->_alloc.construct(new_array, *first);
 					new_array++;
 				}
-				std::cout << "Constructeur par plage : \n- size = " << size() << "\n- capacity = " << capacity() << std::endl;
+				// std::cout << "Constructeur par plage : \n- size = " << size() << "\n- capacity = " << capacity() << std::endl;
 			}
 			
 		// ----- 4) Copy constructor. Constructs the container with the copy of the contents of other. If alloc is not provided, allocator is obtained by calling std::allocator_traits<allocator_type>::select_on_container_copy_construction(other). ----- //
@@ -149,7 +148,7 @@ namespace ft
 					for (size_type i = 0; i < other.size(); i++)
 						this->_alloc.construct(this->_array + i, *(other._array + i));
 				}
-				std::cout << "Constructeur par copie : \n- size = " << size() << "\n- capacity = " << capacity() << std::endl;
+				// std::cout << "Constructeur par copie : \n- size = " << size() << "\n- capacity = " << capacity() << std::endl;
 			}
 		
 		//------------------------- Destructeur ----------------------------//
@@ -160,7 +159,7 @@ namespace ft
 				clear();
 				if (this->_capacity > 0)
 					this->_alloc.deallocate(this->_array, this->_capacity);
-				std::cout << "Destructor Called \n----------------------------------------------------------------------------" << std::endl;
+				// std::cout << "Destructor Called \n----------------------------------------------------------------------------" << std::endl;
 			}
 
 		//-------------------------- Operateur = -----------------------------//

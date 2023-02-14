@@ -6,7 +6,7 @@
 /*   By: iderighe <iderighe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 16:35:03 by iderighe          #+#    #+#             */
-/*   Updated: 2022/11/16 17:58:06 by iderighe         ###   ########.fr       */
+/*   Updated: 2022/11/23 16:20:51 by iderighe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ namespace ft
 			/* if vector 2 is empty OR 1 des valeurs de vector 2 est inférieure à la valeur de vector 1 -> vector 1 est supérieur !*/
 			if (first2 == last2 || *first2 < *first1)
 				return false;
-			else if (*first1 < first2)
+			else if (*first1 < *first2)
 				return true;
 			first1++;
 			first2++;

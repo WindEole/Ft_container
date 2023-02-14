@@ -6,7 +6,7 @@
 /*   By: iderighe <iderighe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 14:32:14 by iderighe          #+#    #+#             */
-/*   Updated: 2022/11/21 12:13:26 by iderighe         ###   ########.fr       */
+/*   Updated: 2022/12/06 15:05:50 by iderighe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 # define RESERVE_ITERATOR_HPP
 
 # include "iterator.hpp"
-# include "iterator_traits.hpp"
-# include "random_access_iterator.hpp"
 # include <cstddef>	// pour std::ptrdiff_t. Used for pointer arithmetic and array indexing.
 					// std::ptrdiff_t is the signed integer type of the result of subtracting two pointers.
 
@@ -25,15 +23,14 @@ iterator that moves from the end to the beginning of the sequence defined by the
 namespace ft
 {
 	template< typename _Iter >
-	class reverse_iterator// : public random_access_iterator< _Iter >
+	class reverse_iterator
 	{
 		private:
-			_Iter _ptr;
+			_Iter															_ptr;
 
 		public:
 			typedef _Iter													iterator_type;
-			typedef typename ft::iterator_traits<_Iter>::iterator_category	category;
-			// typedef typename ft::iterator_traits<_Iter>::value_type			value_type;
+			typedef typename ft::iterator_traits<_Iter>::iterator_category	iterator_category;
 			typedef typename ft::iterator_traits<_Iter>::difference_type	difference_type;
 			typedef typename ft::iterator_traits<_Iter>::pointer			pointer;
 			typedef typename ft::iterator_traits<_Iter>::reference			reference;
@@ -59,7 +56,7 @@ namespace ft
 
 			/* operator= overload */
 			template <class T>
-			reverse_iterator &operator=(const reverse_iterator<T> &cpy)
+			reverse_iterator &operator=(const reverse_iterator<const T> &cpy)
 			{
 				if (this != &cpy)
 					_ptr = cpy.base();
@@ -84,6 +81,12 @@ namespace ft
 			// ----- ptr / ref / index
 
 			pointer operator->()
+			{
+				_Iter _tmp = _ptr;
+				return &(*--_tmp);
+			}
+
+			pointer operator->() const
 			{
 				_Iter _tmp = _ptr;
 				return &(*--_tmp);
@@ -153,63 +156,65 @@ namespace ft
 				_ptr += n;
 				return *this;
 			}
-		};
+	};
 
 	//--------------------------------------------------------------------//
 	//                      NON MEMBER FUNCTIONS                          //
 	//--------------------------------------------------------------------//
 
-		// ----- arithmetic operators - / +
+	// ----- arithmetic operators - / +
 
-		template <typename T, typename U>
-		typename reverse_iterator<T>::difference_type operator-(const reverse_iterator<T> &lhs, const reverse_iterator<U> &rhs)
-		{
-			return (rhs.base() - lhs.base());
-		};
+	template <typename T, typename U>
+	typename reverse_iterator<T>::difference_type operator-(const reverse_iterator<T> &lhs, const reverse_iterator<U> &rhs)
+	{
+		return (rhs.base() - lhs.base());
+	};
 
-		template <class T>
-		reverse_iterator<T> operator+(typename reverse_iterator<T>::difference_type n, const reverse_iterator<T> &rhs)
-		{
-			return (rhs + n);
-		};
+	template <class T>
+	reverse_iterator<T> operator+(typename reverse_iterator<T>::difference_type n, const reverse_iterator<T> &rhs)
+	{
+		return (rhs + n);
+	};
 
-		// ----- comparison iterators (< / > / == / != / >= / <=)
+	// ----- comparison iterators (< / > / == / != / >= / <=)
 
-		template <typename Ite1, typename Ite2>
-		bool operator==(const reverse_iterator<Ite1> &lhs, const reverse_iterator<Ite2> &rhs)
-		{
-			return (lhs.base() == rhs.base());
-		}
+	template <typename Ite1, typename Ite2>
+	bool operator==(const reverse_iterator<Ite1> &lhs, const reverse_iterator<Ite2> &rhs)
+	{
+		return (lhs.base() == rhs.base());
+	}
 
-		template <typename Ite1, typename Ite2>
-		bool operator!=(const reverse_iterator<Ite1> &lhs, const reverse_iterator<Ite2> &rhs)
-		{
-			return (lhs.base() != rhs.base());
-		}
+	template <typename Ite1, typename Ite2>
+	bool operator!=(const reverse_iterator<Ite1> &lhs, const reverse_iterator<Ite2> &rhs)
+	{
+		return (lhs.base() != rhs.base());
+	}
 
-		template <typename Ite1, typename Ite2>
-		bool operator<(const reverse_iterator<Ite1> &lhs, const reverse_iterator<Ite2> &rhs)
-		{
-			return (lhs.base() > rhs.base());
-		}
+	template <typename Ite1, typename Ite2>
+	bool operator<(const reverse_iterator<Ite1> &lhs, const reverse_iterator<Ite2> &rhs)
+	{
+		return (lhs.base() > rhs.base());
+	}
 
-		template <typename Ite1, typename Ite2>
-		bool operator>(const reverse_iterator<Ite1> &lhs, const reverse_iterator<Ite2> &rhs)
-		{
-			return (lhs.base() < rhs.base());
-		}
+	template <typename Ite1, typename Ite2>
+	bool operator>(const reverse_iterator<Ite1> &lhs, const reverse_iterator<Ite2> &rhs)
+	{
+		return (lhs.base() < rhs.base());
+	}
 
-		template <typename Ite1, typename Ite2>
-		bool operator>=(const reverse_iterator<Ite1> &lhs, const reverse_iterator<Ite2> &rhs)
-		{
-			return (lhs.base() <= rhs.base());
-		}
+	template <typename Ite1, typename Ite2>
+	bool operator>=(const reverse_iterator<Ite1> &lhs, const reverse_iterator<Ite2> &rhs)
+	{
+		return (lhs.base() <= rhs.base());
+	}
 
-		template <typename Ite1, typename Ite2>
-		bool operator<=(const reverse_iterator<Ite1> &lhs, const reverse_iterator<Ite2> &rhs)
-		{
-			return (lhs.base() >= rhs.base());
-		}
+	template <typename Ite1, typename Ite2>
+	bool operator<=(const reverse_iterator<Ite1> &lhs, const reverse_iterator<Ite2> &rhs)
+	{
+		return (lhs.base() >= rhs.base());
+	}
+		
+
 }
 
 #endif /* RESERVE_ITERATOR_HPP */                                                                                

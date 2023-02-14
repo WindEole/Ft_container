@@ -6,7 +6,7 @@
 /*   By: iderighe <iderighe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 12:08:12 by iderighe          #+#    #+#             */
-/*   Updated: 2022/11/21 12:16:51 by iderighe         ###   ########.fr       */
+/*   Updated: 2022/12/03 23:49:59 by iderighe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,13 @@
 #include <string>
 #include <stdlib.h>
 #include <vector>
+#include <stack>
+#include <map>
+#include <utility> // pour std::pair.
 #include "vector.hpp"
+#include "stack.hpp"
+#include "map.hpp"
+#include "pair.hpp"
 
 // #define RESET "\e[0m"
 // #define RED "\e[0;31m"
@@ -90,6 +96,11 @@ int	main()
 	// argv = NULL;
 
 	{
+
+		std::cout << DARKMAGENTA << "----------------------------------------------------------------------------" << RESET << std::endl;
+		std::cout << DARKMAGENTA << "------------------------- TEST DU CONTENEUR VECTOR -------------------------" << RESET << std::endl;
+		std::cout << DARKMAGENTA << "----------------------------------------------------------------------------" << RESET << std::endl << std::endl;
+
 		std::cout << RED << "----------------------------------------------------------------------------" << RESET << std::endl;
 		std::cout << RED << "-------------------------- TEST DES CONSTRUCTEURS --------------------------" << RESET << std::endl;
 		std::cout << RED << "----------------------------------------------------------------------------" << RESET << std::endl << std::endl;
@@ -1212,7 +1223,9 @@ int	main()
 			ft::vector<std::string>::reverse_iterator end = second.rend();
 			std::vector<std::string>::reverse_iterator std_begin = vct_scd.rbegin();
 			std::vector<std::string>::reverse_iterator std_end = vct_scd.rend();
-			
+			std::cout << "valeur contenue dans iterator rbegin : " << *second.rbegin() << " | " << *vct_scd.rbegin() << std::endl;
+			std::cout << "valeur contenue dans iterator rend : " << *(second.rend() - 1) << " | " << *(vct_scd.rend() - 1) << std::endl;
+
 			first.insert(itinsert, begin, end);
 			vct.insert(vct_insert, std_begin, std_end);
 			print_status(first, vct);
@@ -1739,5 +1752,873 @@ int	main()
 	// 	for (int i = 0; i < (int)second.size(); i++)
 	// 		std::cout << second[i] << std::endl;
 	// 	std::cout << RESET << std::endl;
+	}
+
+	std::cout << std::endl;
+
+	std::cout << RED << "----------------------------------------------------------------------------" << RESET << std::endl;
+	std::cout << RED << "-------------------- TEST VECTOR : RELATIONAl OPERATORS --------------------" << RESET << std::endl;
+	std::cout << RED << "----------------------------------------------------------------------------" << RESET << std::endl << std::endl;
+
+	std::cout << ORANGE << "----------------------------------------------------------------------------" << RESET << std::endl;
+	std::cout << ORANGE << "		Test vector d'int" << RESET << std::endl;
+	std::cout << ORANGE << "----------------------------------------------------------------------------" << RESET << std::endl << std::endl;
+
+	std::cout << YELLOW << "----------------------------------------------------------------------------" << RESET << std::endl;
+	std::cout << YELLOW << "Sur vector vide (constructeur par défaut)" << RESET << std::endl;
+	std::cout << YELLOW << "----------------------------------------------------------------------------" << RESET << std::endl << std::endl;
+	{
+		std::cout << PALETURQUOISE << "\ntest des relational operators (non member functions) : " << RESET << std::endl;
+		ft::vector<int> first;
+		std::vector<int> stk;
+		first.push_back(42);
+		stk.push_back(42);
+
+		ft::vector<int> second;
+		std::vector<int> stk_scd;
+		second.push_back(42);
+		stk_scd.push_back(42);
+
+		std::cout << SPRINGGREEN << "test operator ==" << RESET << std::endl;
+		std::cout << first.back() << " | " << second.back() << std::endl;
+		std::cout << "ft : ";
+		if (first == second)
+			std::cout << "oui" << std::endl;
+		else
+			std::cout << "non" << std::endl;
+		std::cout << stk.back() << " | " << stk_scd.back() << std::endl;
+		std::cout << "std : ";
+		if (stk == stk_scd)
+			std::cout << "oui" << std::endl;
+		else
+			std::cout << "non" << std::endl;
+		
+		std::cout << SPRINGGREEN << "test operator !=" << RESET << std::endl;
+		std::cout << first.back() << " | " << second.back() << std::endl;
+		std::cout << "ft : ";
+		if (first != second)
+			std::cout << "oui" << std::endl;
+		else
+			std::cout << "non" << std::endl;
+		std::cout << stk.back() << " | " << stk_scd.back() << std::endl;
+		std::cout << "std : ";
+		if (stk != stk_scd)
+			std::cout << "oui" << std::endl;
+		else
+			std::cout << "non" << std::endl;
+		
+		first.push_back(21);
+		stk.push_back(21);
+		second.push_back(84);
+		stk_scd.push_back(84);
+
+		std::cout << SPRINGGREEN << "test operator <" << RESET << std::endl;
+		std::cout << first.back() << " | " << second.back() << std::endl;
+		std::cout << "ft : ";
+		if (first < second)
+			std::cout << "oui" << std::endl;
+		else
+			std::cout << "non" << std::endl;
+		std::cout << stk.back() << " | " << stk_scd.back() << std::endl;
+		std::cout << "std : ";
+		if (stk < stk_scd)
+			std::cout << "oui" << std::endl;
+		else
+			std::cout << "non" << std::endl;
+		
+		std::cout << SPRINGGREEN << "test operator >" << RESET << std::endl;
+		std::cout << first.back() << " | " << second.back() << std::endl;
+		std::cout << "ft : ";
+		if (first > second)
+			std::cout << "oui" << std::endl;
+		else
+			std::cout << "non" << std::endl;
+		std::cout << stk.back() << " | " << stk_scd.back() << std::endl;
+		std::cout << "std : ";
+		if (stk > stk_scd)
+			std::cout << "oui" << std::endl;
+		else
+			std::cout << "non" << std::endl;
+	}
+
+
+
+
+
+
+
+
+	{
+		std::cout << std::endl;
+		std::cout << DARKMAGENTA << "----------------------------------------------------------------------------" << RESET << std::endl;
+		std::cout << DARKMAGENTA << "------------------------- TEST DU CONTAINER STACK --------------------------" << RESET << std::endl;
+		std::cout << DARKMAGENTA << "----------------------------------------------------------------------------" << RESET << std::endl << std::endl;
+
+		std::cout << ORANGE << "----------------------------------------------------------------------------" << RESET << std::endl;
+		std::cout << ORANGE << "		Test stack d'int" << RESET << std::endl;
+		std::cout << ORANGE << "----------------------------------------------------------------------------" << RESET << std::endl << std::endl;
+
+		std::cout << YELLOW << "----------------------------------------------------------------------------" << RESET << std::endl;
+		std::cout << YELLOW << "Sur stack vide (constructeur par défaut)" << RESET << std::endl;
+		std::cout << YELLOW << "----------------------------------------------------------------------------" << RESET << std::endl << std::endl;
+		{
+			std::cout << PALETURQUOISE << "\ntest des fonctions push et pop / affichage des résultats de empty / size / top : " << RESET << std::endl;
+			ft::stack<int> first;
+			std::stack<int> stk;
+			first.push(42);
+			stk.push(42);
+
+			std::cout << SPRINGGREEN << "push 42" << RESET << std::endl;
+			std::cout << FUCHSIA << "\t\t    | ----- my stack (ft) ---- | ----- stack standard ---- |" << RESET << std::endl;
+			std::cout << SILVER << "- size =\t\t" << first.size() << std::setw(27) << stk.size() << "\n- containter empty ?\t"
+			<< std::boolalpha << first.empty() << std::setw(27) << stk.empty() << std::endl
+			<< "- top value =\t\t" << first.top() << std::setw(27) << stk.top() << std::endl;
+			std::cout << RESET << std::endl;
+
+			first.push(21);
+			stk.push(21);
+
+			std::cout << SPRINGGREEN << "push 21" << RESET << std::endl;
+			std::cout << FUCHSIA << "\t\t    | ----- my stack (ft) ---- | ----- stack standard ---- |" << RESET << std::endl;
+			std::cout << SILVER << "- size =\t\t" << first.size() << std::setw(27) << stk.size() << "\n- containter empty ?\t"
+			<< std::boolalpha << first.empty() << std::setw(27) << stk.empty() << std::endl
+			<< "- top value =\t\t" << first.top() << std::setw(27) << stk.top() << std::endl;
+			std::cout << RESET << std::endl;
+
+			first.push(-13);
+			stk.push(-13);
+
+			std::cout << SPRINGGREEN << "push -13" << RESET << std::endl;
+			std::cout << FUCHSIA << "\t\t    | ----- my stack (ft) ---- | ----- stack standard ---- |" << RESET << std::endl;
+			std::cout << SILVER << "- size =\t\t" << first.size() << std::setw(27) << stk.size() << "\n- containter empty ?\t"
+			<< std::boolalpha << first.empty() << std::setw(27) << stk.empty() << std::endl
+			<< "- top value =\t\t" << first.top() << std::setw(27) << stk.top() << std::endl;
+			std::cout << RESET << std::endl;
+
+			first.pop();
+			stk.pop();
+
+			std::cout << SPRINGGREEN << "pop dernier element (ici : -13) car LIFO (last in - first out" << RESET << std::endl;
+			std::cout << FUCHSIA << "\t\t    | ----- my stack (ft) ---- | ----- stack standard ---- |" << RESET << std::endl;
+			std::cout << SILVER << "- size =\t\t" << first.size() << std::setw(27) << stk.size() << "\n- containter empty ?\t"
+			<< std::boolalpha << first.empty() << std::setw(27) << stk.empty() << std::endl
+			<< "- top value =\t\t" << first.top() << std::setw(27) << stk.top() << std::endl;
+			std::cout << RESET << std::endl;
+		}
+		
+		std::cout << std::endl;
+		std::cout << ORANGE << "----------------------------------------------------------------------------" << RESET << std::endl;
+		std::cout << ORANGE << "		Test stack de string" << RESET << std::endl;
+		std::cout << ORANGE << "----------------------------------------------------------------------------" << RESET << std::endl << std::endl;
+
+		std::cout << YELLOW << "----------------------------------------------------------------------------" << RESET << std::endl;
+		std::cout << YELLOW << "Sur stack vide (constructeur par défaut)" << RESET << std::endl;
+		std::cout << YELLOW << "----------------------------------------------------------------------------" << RESET << std::endl << std::endl;
+		{
+			std::cout << PALETURQUOISE << "\ntest des fonctions push et pop / affichage des résultats de empty / size / top : " << RESET << std::endl;
+			ft::stack<std::string> first;
+			std::stack<std::string> stk;
+			first.push("Salut");
+			stk.push("Salut");
+
+			std::cout << SPRINGGREEN << "push Salut" << RESET << std::endl;
+			std::cout << FUCHSIA << "\t\t    | ----- my stack (ft) ---- | ----- stack standard ---- |" << RESET << std::endl;
+			std::cout << SILVER << "- size =\t\t" << first.size() << std::setw(27) << stk.size() << "\n- containter empty ?\t"
+			<< std::boolalpha << first.empty() << std::setw(27) << stk.empty() << std::endl
+			<< "- top value =\t\t" << first.top() << std::setw(27) << stk.top() << std::endl;
+			std::cout << RESET << std::endl;
+
+			first.push("Hello World !");
+			stk.push("Hello World !");
+
+			std::cout << SPRINGGREEN << "push Hello World !" << RESET << std::endl;
+			std::cout << FUCHSIA << "\t\t    | ----- my stack (ft) ---- | ----- stack standard ---- |" << RESET << std::endl;
+			std::cout << SILVER << "- size =\t\t" << first.size() << std::setw(27) << stk.size() << "\n- containter empty ?\t"
+			<< std::boolalpha << first.empty() << std::setw(27) << stk.empty() << std::endl
+			<< "- top value =\t\t" << first.top() << std::setw(27) << stk.top() << std::endl;
+			std::cout << RESET << std::endl;
+
+			first.push("Grumph...");
+			stk.push("Grumph...");
+
+			std::cout << SPRINGGREEN << "push Grumph..." << RESET << std::endl;
+			std::cout << FUCHSIA << "\t\t    | ----- my stack (ft) ---- | ----- stack standard ---- |" << RESET << std::endl;
+			std::cout << SILVER << "- size =\t\t" << first.size() << std::setw(27) << stk.size() << "\n- containter empty ?\t"
+			<< std::boolalpha << first.empty() << std::setw(27) << stk.empty() << std::endl
+			<< "- top value =\t\t" << first.top() << std::setw(27) << stk.top() << std::endl;
+			std::cout << RESET << std::endl;
+
+			first.pop();
+			stk.pop();
+
+			std::cout << SPRINGGREEN << "pop dernier element (ici : Grumph...) car LIFO (last in - first out" << RESET << std::endl;
+			std::cout << FUCHSIA << "\t\t    | ----- my stack (ft) ---- | ----- stack standard ---- |" << RESET << std::endl;
+			std::cout << SILVER << "- size =\t\t" << first.size() << std::setw(27) << stk.size() << "\n- containter empty ?\t"
+			<< std::boolalpha << first.empty() << std::setw(27) << stk.empty() << std::endl
+			<< "- top value =\t\t" << first.top() << std::setw(27) << stk.top() << std::endl;
+			std::cout << RESET << std::endl;
+		}
+
+
+		std::cout << std::endl;
+		std::cout << ORANGE << "----------------------------------------------------------------------------" << RESET << std::endl;
+		std::cout << ORANGE << "		Test stack de int" << RESET << std::endl;
+		std::cout << ORANGE << "----------------------------------------------------------------------------" << RESET << std::endl << std::endl;
+
+		std::cout << YELLOW << "----------------------------------------------------------------------------" << RESET << std::endl;
+		std::cout << YELLOW << "Sur stack vide (constructeur par défaut)" << RESET << std::endl;
+		std::cout << YELLOW << "----------------------------------------------------------------------------" << RESET << std::endl << std::endl;
+		{
+			std::cout << PALETURQUOISE << "\ntest des relational operators (non member functions) : " << RESET << std::endl;
+			ft::stack<int> first;
+			std::stack<int> stk;
+			first.push(42);
+			stk.push(42);
+
+			ft::stack<int> second;
+			std::stack<int> stk_scd;
+			second.push(42);
+			stk_scd.push(42);
+
+			std::cout << SPRINGGREEN << "test operator ==" << RESET << std::endl;
+			std::cout << first.top() << " | " << second.top() << std::endl;
+			std::cout << "ft : ";
+			if (first == second)
+				std::cout << "oui" << std::endl;
+			else
+				std::cout << "non" << std::endl;
+			std::cout << stk.top() << " | " << stk_scd.top() << std::endl;
+			std::cout << "std : ";
+			if (stk == stk_scd)
+				std::cout << "oui" << std::endl;
+			else
+				std::cout << "non" << std::endl;
+			
+			std::cout << SPRINGGREEN << "test operator !=" << RESET << std::endl;
+			std::cout << first.top() << " | " << second.top() << std::endl;
+			std::cout << "ft : ";
+			if (first != second)
+				std::cout << "oui" << std::endl;
+			else
+				std::cout << "non" << std::endl;
+			std::cout << stk.top() << " | " << stk_scd.top() << std::endl;
+			std::cout << "std : ";
+			if (stk != stk_scd)
+				std::cout << "oui" << std::endl;
+			else
+				std::cout << "non" << std::endl;
+			
+			first.push(21);
+			stk.push(21);
+			second.push(84);
+			stk_scd.push(84);
+
+			std::cout << SPRINGGREEN << "test operator <" << RESET << std::endl;
+			std::cout << first.top() << " | " << second.top() << std::endl;
+			std::cout << "ft : ";
+			if (first < second)
+				std::cout << "oui" << std::endl;
+			else
+				std::cout << "non" << std::endl;
+			std::cout << stk.top() << " | " << stk_scd.top() << std::endl;
+			std::cout << "std : ";
+			if (stk < stk_scd)
+				std::cout << "oui" << std::endl;
+			else
+				std::cout << "non" << std::endl;
+			
+			std::cout << SPRINGGREEN << "test operator >" << RESET << std::endl;
+			std::cout << first.top() << " | " << second.top() << std::endl;
+			std::cout << "ft : ";
+			if (first > second)
+				std::cout << "oui" << std::endl;
+			else
+				std::cout << "non" << std::endl;
+			std::cout << stk.top() << " | " << stk_scd.top() << std::endl;
+			std::cout << "std : ";
+			if (stk > stk_scd)
+				std::cout << "oui" << std::endl;
+			else
+				std::cout << "non" << std::endl;
+		}
+	}
+
+
+
+	{
+		std::cout << std::endl;
+		std::cout << DARKMAGENTA << "----------------------------------------------------------------------------" << RESET << std::endl;
+		std::cout << DARKMAGENTA << "-------------------------- TEST DU CONTAINER MAP ---------------------------" << RESET << std::endl;
+		std::cout << DARKMAGENTA << "----------------------------------------------------------------------------" << RESET << std::endl << std::endl;
+
+		std::cout << ORANGE << "----------------------------------------------------------------------------" << RESET << std::endl;
+		std::cout << ORANGE << "		Test de la classe pair" << RESET << std::endl;
+		std::cout << ORANGE << "----------------------------------------------------------------------------" << RESET << std::endl << std::endl;
+
+		std::cout << YELLOW << "----------------------------------------------------------------------------" << RESET << std::endl;
+		std::cout << YELLOW << "Sur stack vide (constructeur par défaut)" << RESET << std::endl;
+		std::cout << YELLOW << "----------------------------------------------------------------------------" << RESET << std::endl << std::endl;
+		{
+			std::cout << PALETURQUOISE << "\ntest de la classe pair : " << RESET << std::endl;
+			ft::pair <std::string,double> product1;                     // default constructor
+			ft::pair <std::string,double> product2 ("tomatoes",2.30);   // value init
+			ft::pair <std::string,double> product3 (product2);          // copy constructor
+
+			// product1 = std::make_pair(std::string("lightbulbs"),0.99);   // using make_pair (move)
+
+			product2.first = "shoes";                  // the type of first is string
+			product2.second = 39.90;                   // the type of second is double
+
+			std::cout << "The price of " << product1.first << " is $" << product1.second << '\n';
+			std::cout << "The price of " << product2.first << " is $" << product2.second << '\n';
+			std::cout << "The price of " << product3.first << " is $" << product3.second << '\n';
+
+			// ft::pair<int> first;
+			// std::stack<int> stk;
+			// first.push(42);
+			// stk.push(42);
+
+			// std::cout << SPRINGGREEN << "push 42" << RESET << std::endl;
+			// std::cout << FUCHSIA << "\t\t    | ----- my stack (ft) ---- | ----- stack standard ---- |" << RESET << std::endl;
+			// std::cout << SILVER << "- size =\t\t" << first.size() << std::setw(27) << stk.size() << "\n- containter empty ?\t"
+			// << std::boolalpha << first.empty() << std::setw(27) << stk.empty() << std::endl
+			// << "- top value =\t\t" << first.top() << std::setw(27) << stk.top() << std::endl;
+			// std::cout << RESET << std::endl;
+
+			// first.push(21);
+			// stk.push(21);
+
+			// std::cout << SPRINGGREEN << "push 21" << RESET << std::endl;
+			// std::cout << FUCHSIA << "\t\t    | ----- my stack (ft) ---- | ----- stack standard ---- |" << RESET << std::endl;
+			// std::cout << SILVER << "- size =\t\t" << first.size() << std::setw(27) << stk.size() << "\n- containter empty ?\t"
+			// << std::boolalpha << first.empty() << std::setw(27) << stk.empty() << std::endl
+			// << "- top value =\t\t" << first.top() << std::setw(27) << stk.top() << std::endl;
+			// std::cout << RESET << std::endl;
+
+			// first.push(-13);
+			// stk.push(-13);
+
+			// std::cout << SPRINGGREEN << "push -13" << RESET << std::endl;
+			// std::cout << FUCHSIA << "\t\t    | ----- my stack (ft) ---- | ----- stack standard ---- |" << RESET << std::endl;
+			// std::cout << SILVER << "- size =\t\t" << first.size() << std::setw(27) << stk.size() << "\n- containter empty ?\t"
+			// << std::boolalpha << first.empty() << std::setw(27) << stk.empty() << std::endl
+			// << "- top value =\t\t" << first.top() << std::setw(27) << stk.top() << std::endl;
+			// std::cout << RESET << std::endl;
+
+			// first.pop();
+			// stk.pop();
+
+			// std::cout << SPRINGGREEN << "pop dernier element (ici : -13) car LIFO (last in - first out" << RESET << std::endl;
+			// std::cout << FUCHSIA << "\t\t    | ----- my stack (ft) ---- | ----- stack standard ---- |" << RESET << std::endl;
+			// std::cout << SILVER << "- size =\t\t" << first.size() << std::setw(27) << stk.size() << "\n- containter empty ?\t"
+			// << std::boolalpha << first.empty() << std::setw(27) << stk.empty() << std::endl
+			// << "- top value =\t\t" << first.top() << std::setw(27) << stk.top() << std::endl;
+			// std::cout << RESET << std::endl;
+		}
+		// {
+		// 	std::cout << ORANGE << "----------------------------------------------------------------------------" << RESET << std::endl;
+		// 	std::cout << ORANGE << "		Test du container map" << RESET << std::endl;
+		// 	std::cout << ORANGE << "----------------------------------------------------------------------------" << RESET << std::endl << std::endl;
+
+		// 	std::cout << PALETURQUOISE << "\ntest de la std::map : " << RESET << std::endl;
+
+		// 	// std::map<int, std::string> map;
+
+		// 	// map[6] = "Bophet";
+		// 	// map[11] = "Zabou";
+		// 	// map[2] = "Lilice";
+		// 	// map[8] = "Michael Barber";
+		// 	// std::map<int, std::string>::iterator map_it = map.begin();
+		// 	// std::map<int, std::string>::iterator map_ite = map.end();
+
+		// 	std::map<std::string, int> map;
+
+		// 	map["Michel"] = 7;
+		// 	map["Emmanuel"] = 2;
+		// 	map["Zurich"] = 5;
+		// 	map["ISA"] = 9;
+		// 	std::map<std::string, int>::iterator map_it = map.begin();
+		// 	std::map<std::string, int>::iterator map_ite = map.end();
+
+		// 	std::cout << SPRINGGREEN << "affichage contenu de map" << RESET << std::endl;
+		// 	std::cout << FUCHSIA << "\t\t    | ------ my map (ft) ----- | ------ map standard ----- |" << RESET << std::endl;
+		// 	std::cout << SILVER << "- size =\t\t" << map.size() << std::setw(27) << "\n- containter empty ?\t"
+		// 	<< std::boolalpha << map.empty() << std::setw(27) << std::endl;
+
+		// 	for (; map_it != map_ite; ++map_it)
+		// 		std::cout << map_it->first << " | " <<  map_it->second << " | " << map.size() << std::setw(27) << std::endl;
+
+
+		// 	// for (size_t i = 0; i < first.size(); i++)
+		// 	// 	std::cout << i << " | " << first[i] << " | " << first.size() << std::setw(27) << std::endl;
+		// 	std::cout << RESET << std::endl;
+		// 	std::cout << SILVER << "- size =\t\t" << map.size() << RESET << std::endl;
+			
+		// }
+		{
+			std::cout << std::endl;
+			std::cout << ORANGE << "----------------------------------------------------------------------------" << RESET << std::endl;
+			std::cout << ORANGE << "		Test du container map à moi" << RESET << std::endl;
+			std::cout << ORANGE << "----------------------------------------------------------------------------" << RESET << std::endl << std::endl;
+
+			std::cout << PALETURQUOISE << "\ntest de la std::map : " << RESET << std::endl;
+
+			ft::map<int, std::string> ft_map;
+			ft_map.insert(ft::make_pair(5, "ROOT"));
+			ft_map.insert(ft::make_pair(2, "BEGIN"));
+			ft_map.insert(ft::make_pair(10, "END"));
+			ft_map.insert(ft::make_pair(8, "RDM"));
+			ft_map.insert(ft::make_pair(2, "NEW"));
+
+			ft::map<int, std::string>::iterator ft_it = ft_map.begin();
+			ft::map<int, std::string>::iterator ft_ite = ft_map.end();
+
+			std::map<int, std::string> std_map;
+			std_map.insert(std::make_pair(5, "ROOT"));
+			std_map.insert(std::make_pair(2, "BEGIN"));
+			std_map.insert(std::make_pair(10, "END"));
+			std_map.insert(std::make_pair(8, "RDM"));
+			std_map.insert(std::make_pair(2, "NEW"));
+			
+			std::map<int, std::string>::iterator std_it = std_map.begin();
+			std::map<int, std::string>::iterator std_ite = std_map.end();
+
+			std::cout << SPRINGGREEN << "affichage contenu de map" << RESET << std::endl;
+			std::cout << FUCHSIA << "\t\t    | ------ my map (ft) ----- | ------ map standard ----- |" << RESET << std::endl;
+			std::cout << SILVER << "- size =\t\t" << ft_map.size() << std::setw(27) << std_map.size() << "\n- containter empty ?\t"
+			<< std::boolalpha << ft_map.empty() << std::setw(27) << std_map.empty() << std::endl;
+
+			std::cout << std::endl;
+
+			size_t i = 0;
+			while (i < std_map.size() || i < ft_map.size())
+			{
+				std::cout << "\t\t\t";
+				if (ft_it != ft_ite) {
+					std::cout << ft_it->first << " | " <<  ft_it->second;
+					ft_it++; }
+				else {
+					std::cout << "\t"; }
+				std::cout << "\t\t   ";
+				if (std_it != std_ite) {
+					std::cout << std_it->first << " | " <<  std_it->second;
+					std_it++; }
+				std::cout << std::endl;
+				i++;
+			}
+
+			// for (; std_it != std_ite; ++std_it)
+			// 	std::cout << std_it->first << " | " <<  std_it->second << " | " << std_map.size() << std::endl;
+			// for (; ft_it != ft_ite; ++ft_it)
+			// 	std::cout << ft_it->first << " | " <<  ft_it->second << " | " << ft_map.size() << std::endl;
+
+			// std::cout << ft_it->first << " | " <<  ft_it->second << " | " << ft_map.size() << std::endl;
+			// std::cout << ft_ite->first << " | " <<  ft_ite->second << " | " << ft_map.size() << std::endl;
+			// std::cout << std_it->first << " | " <<  std_it->second << " | " << std_map.size() << std::endl;
+			// std::cout << std_ite->first << " | " <<  std_ite->second << " | " << std_map.size() << std::endl;
+
+
+			// for (size_t i = 0; i < first.size(); i++)
+			// 	std::cout << i << " | " << first[i] << " | " << first.size() << std::setw(27) << std::endl;
+			std::cout << RESET << std::endl;
+			std::cout << SILVER << "- size =\t\t" << ft_map.size() << std::setw(27) << std_map.size() << RESET << std::endl;
+			
+		}
+		{
+			std::cout << std::endl;
+			std::cout << ORANGE << "----------------------------------------------------------------------------" << RESET << std::endl;
+			std::cout << ORANGE << "		Test du container map à moi" << RESET << std::endl;
+			std::cout << ORANGE << "----------------------------------------------------------------------------" << RESET << std::endl << std::endl;
+
+			std::cout << PALETURQUOISE << "\ntest de la std::map : " << RESET << std::endl;
+
+			ft::map<int, std::string> ft_map;
+			// ft_map.insert(ft::make_pair(5, "ROOT"));
+			// ft_map.insert(ft::make_pair(2, "BEGIN"));
+			// ft_map.insert(ft::make_pair(10, "END"));
+			// ft_map.insert(ft::make_pair(8, "RDM"));
+			// ft_map.insert(ft::make_pair(2, "NEW"));
+
+
+
+			ft::map<int, std::string> std_map;
+			std_map.insert(ft::make_pair(5, "ROOT"));
+			std_map.insert(ft::make_pair(2, "BEGIN"));
+			std_map.insert(ft::make_pair(10, "END"));
+			std_map.insert(ft::make_pair(8, "RDM"));
+			std_map.insert(ft::make_pair(2, "NEW"));
+			
+			ft::map<int, std::string>::iterator std_it = std_map.begin();
+			ft::map<int, std::string>::iterator std_ite = std_map.end()--;
+
+			ft_map.insert(std_it, std_ite);
+
+			std::cout << SPRINGGREEN << "affichage contenu de map" << RESET << std::endl;
+			std::cout << FUCHSIA << "\t\t    | ------ my map (ft) ----- | ------ map standard ----- |" << RESET << std::endl;
+			std::cout << SILVER << "- size =\t\t" << ft_map.size() << std::setw(27) << std_map.size() << "\n- containter empty ?\t"
+			<< std::boolalpha << ft_map.empty() << std::setw(27) << std_map.empty() << std::endl;
+
+			std::cout << std::endl;
+			ft::map<int, std::string>::iterator ft_it = ft_map.begin();
+			ft::map<int, std::string>::iterator ft_ite = ft_map.end();
+			ft_map.insert(++ft_it, ft::make_pair(7, "TEST"));
+			ft_it--;
+			size_t i = 0;
+			while (i < std_map.size() || i < ft_map.size())
+			{
+				std::cout << "\t\t\t";
+				if (ft_it != ft_ite) {
+					std::cout << ft_it->first << " | " <<  ft_it->second;
+					ft_it++; }
+				else {
+					std::cout << "\t"; }
+				std::cout << "\t\t   ";
+				if (std_it != std_ite) {
+					std::cout << std_it->first << " | " <<  std_it->second;
+					std_it++; }
+				std::cout << std::endl;
+				i++;
+			}
+		}
+		{
+			std::cout << std::endl;
+			std::cout << ORANGE << "----------------------------------------------------------------------------" << RESET << std::endl;
+			std::cout << ORANGE << "		Test du container map à moi" << RESET << std::endl;
+			std::cout << ORANGE << "----------------------------------------------------------------------------" << RESET << std::endl << std::endl;
+
+			std::cout << PALETURQUOISE << "\ntest de la std::map : " << RESET << std::endl;
+
+			ft::map<int, std::string> ft_map;
+			// ft_map.insert(ft::make_pair(5, "ROOT"));
+			// ft_map.insert(ft::make_pair(2, "BEGIN"));
+			// ft_map.insert(ft::make_pair(10, "END"));
+			// ft_map.insert(ft::make_pair(8, "RDM"));
+			// ft_map.insert(ft::make_pair(2, "NEW"));
+
+
+
+			ft::map<int, std::string> std_map;
+			std_map.insert(ft::make_pair(5, "ROOT"));
+			std_map.insert(ft::make_pair(2, "Aisne"));
+			std_map.insert(ft::make_pair(10, "Aube"));
+			std_map.insert(ft::make_pair(8, "Ardennes"));
+			std_map.insert(ft::make_pair(2, "NEW"));
+			std_map.insert(ft::make_pair(15, "END"));
+			std_map.insert(ft::make_pair(7, "Ardeche"));
+			std_map.insert(ft::make_pair(3, "Allier"));
+			std_map.insert(ft::make_pair(1, "BEGIN"));
+			std_map.insert(ft::make_pair(9, "Ariege"));
+			
+			ft::map<int, std::string>::iterator std_it = std_map.begin();
+			ft::map<int, std::string>::iterator std_ite = std_map.end()--;
+
+			ft_map.insert(std_it, std_ite);
+
+			std::cout << SPRINGGREEN << "affichage contenu de map" << RESET << std::endl;
+			std::cout << FUCHSIA << "\t\t    | ------ my map (ft) ----- | ------ map standard ----- |" << RESET << std::endl;
+			std::cout << SILVER << "- size =\t\t" << ft_map.size() << std::setw(27) << std_map.size() << "\n- containter empty ?\t"
+			<< std::boolalpha << ft_map.empty() << std::setw(27) << std_map.empty() << std::endl;
+
+			std::cout << std::endl;
+			ft::map<int, std::string>::iterator ft_it = ft_map.begin();
+			ft::map<int, std::string>::iterator ft_ite = ft_map.end();
+			ft_map.insert(++ft_it, ft::make_pair(12, "Aveyron"));
+			ft_it--;
+			size_t i = 0;
+			while (i < std_map.size() || i < ft_map.size())
+			{
+				std::cout << "\t\t\t";
+				if (ft_it != ft_ite) {
+					std::cout << ft_it->first << " | " <<  ft_it->second << " | " << ft_map.size();
+					ft_it++; }
+				else {
+					std::cout << "\t"; }
+				std::cout << "\t\t   ";
+				// if (std_it != std_ite) {
+				// 	std::cout << std_it->first << " | " <<  std_it->second;
+				// 	std_it++; }
+				std::cout << std::endl;
+				i++;
+			}
+
+			std::cout << std::endl << std::endl;
+
+
+			ft_map.erase(ft_map.begin());
+			ft_it = ft_map.begin();
+			ft_ite = ft_map.end();
+			i = 0;
+			while (i < std_map.size() || i < ft_map.size())
+			{
+				std::cout << "\t\t\t";
+				if (ft_it != ft_ite) {
+					std::cout << ft_it->first << " | " <<  ft_it->second << " | " << ft_map.size();
+					ft_it++; }
+				else {
+					std::cout << "\t"; }
+				std::cout << "\t\t   ";
+				// if (std_it != std_ite) {
+				// 	std::cout << std_it->first << " | " <<  std_it->second;
+				// 	std_it++; }
+				std::cout << std::endl;
+				i++;
+			}
+
+			std::cout << std::endl << std::endl;
+
+			ft_map.erase(3);
+			ft_it = ft_map.begin();
+			ft_ite = ft_map.end();
+			i = 0;
+			while (i < std_map.size() || i < ft_map.size())
+			{
+				std::cout << "\t\t\t";
+				if (ft_it != ft_ite) {
+					std::cout << ft_it->first << " | " <<  ft_it->second << " | " << ft_map.size();
+					ft_it++; }
+				else {
+					std::cout << "\t"; }
+				std::cout << "\t\t   ";
+				// if (std_it != std_ite) {
+				// 	std::cout << std_it->first << " | " <<  std_it->second;
+				// 	std_it++; }
+				std::cout << std::endl;
+				i++;
+			}
+
+			std::cout << std::endl << std::endl;
+
+			ft_it = ft_map.begin();
+			ft_it++;
+			ft_ite = ft_map.end();
+			ft_ite--;
+			ft_map.erase(++ft_it, --ft_ite);
+
+			ft_it = ft_map.begin();
+			ft_ite = ft_map.end();
+			i = 0;
+			while (i < std_map.size() || i < ft_map.size())
+			{
+				std::cout << "\t\t\t";
+				if (ft_it != ft_ite) {
+					std::cout << ft_it->first << " | " <<  ft_it->second << " | " << ft_map.size();
+					ft_it++; }
+				else {
+					std::cout << "\t"; }
+				std::cout << "\t\t   ";
+				// if (std_it != std_ite) {
+				// 	std::cout << std_it->first << " | " <<  std_it->second;
+				// 	std_it++; }
+				std::cout << std::endl;
+				i++;
+			}
+
+			std::cout << std::endl << std::endl;
+
+			ft_it = ft_map.begin();
+			ft_ite = ft_map.end();
+			ft_map.clear();
+
+			ft_it = ft_map.begin();
+			ft_ite = ft_map.end();
+			std_it = std_map.begin();
+			std_ite = std_map.end();
+			i = 0;
+			while (i < std_map.size() || i < ft_map.size())
+			{
+				std::cout << "\t\t\t";
+				if (ft_it != ft_ite) {
+					std::cout << ft_it->first << " | " <<  ft_it->second << " | " << ft_map.size();
+					ft_it++; }
+				else {
+					std::cout << "\t"; }
+				std::cout << "\t\t   ";
+				if (std_it != std_ite) {
+					std::cout << std_it->first << " | " <<  std_it->second;
+					std_it++; }
+				std::cout << std::endl;
+				i++;
+			}
+		}
+		{
+			std::cout << std::endl;
+			std::cout << ORANGE << "----------------------------------------------------------------------------" << RESET << std::endl;
+			std::cout << ORANGE << "		Test du container map à moi" << RESET << std::endl;
+			std::cout << ORANGE << "----------------------------------------------------------------------------" << RESET << std::endl << std::endl;
+
+			std::cout << PALETURQUOISE << "\ntest de la std::map : " << RESET << std::endl;
+
+
+			ft::map<int, std::string> std_map;
+			std_map.insert(ft::make_pair(5, "ROOT"));
+			std_map.insert(ft::make_pair(2, "Aisne"));
+			std_map.insert(ft::make_pair(10, "Aube"));
+			std_map.insert(ft::make_pair(8, "Ardennes"));
+			std_map.insert(ft::make_pair(2, "NEW"));
+			std_map.insert(ft::make_pair(15, "END"));
+			std_map.insert(ft::make_pair(7, "Ardeche"));
+			std_map.insert(ft::make_pair(3, "Allier"));
+			std_map.insert(ft::make_pair(1, "BEGIN"));
+			std_map.insert(ft::make_pair(9, "Ariege"));
+			
+			ft::map<int, std::string>::iterator std_it = std_map.begin();
+			ft::map<int, std::string>::iterator std_ite = std_map.end();
+
+			ft::map<int, std::string> ft_map(std_it, std_ite);
+
+			std::cout << SPRINGGREEN << "affichage contenu de map constructor range" << RESET << std::endl;
+			std::cout << FUCHSIA << "\t\t    | ------ my map (ft) ----- | ------ map standard ----- |" << RESET << std::endl;
+			std::cout << SILVER << "- size =\t\t" << ft_map.size() << std::setw(27) << std_map.size() << "\n- containter empty ?\t"
+			<< std::boolalpha << ft_map.empty() << std::setw(27) << std_map.empty() << std::endl;
+
+			std::cout << std::endl;
+			ft::map<int, std::string>::iterator ft_it = ft_map.begin();
+			ft::map<int, std::string>::iterator ft_ite = ft_map.end();
+			size_t i = 0;
+			while (i < std_map.size() || i < ft_map.size())
+			{
+				std::cout << "\t\t\t";
+				if (ft_it != ft_ite) {
+					std::cout << ft_it->first << " | " <<  ft_it->second << " | " << ft_map.size();
+					ft_it++; }
+				else {
+					std::cout << "\t"; }
+				std::cout << "\t\t   ";
+				if (std_it != std_ite) {
+					std::cout << std_it->first << " | " <<  std_it->second;
+					std_it++; }
+				std::cout << std::endl;
+				i++;
+			}
+		}
+		{
+			std::cout << std::endl;
+			std::cout << ORANGE << "----------------------------------------------------------------------------" << RESET << std::endl;
+			std::cout << ORANGE << "		Test du container map à moi" << RESET << std::endl;
+			std::cout << ORANGE << "----------------------------------------------------------------------------" << RESET << std::endl << std::endl;
+
+			std::cout << PALETURQUOISE << "\ntest de la std::map : " << RESET << std::endl;
+
+
+			std::map<int, std::string> std_map;
+			std_map.insert(std::make_pair(5, "ROOT"));
+			std_map.insert(std::make_pair(2, "BEGIN"));
+			std_map.insert(std::make_pair(10, "Aube"));
+			std_map.insert(std::make_pair(8, "Ardennes"));
+			std_map.insert(std::make_pair(2, "NEW"));
+			std_map.insert(std::make_pair(15, "END"));
+			std_map.insert(std::make_pair(7, "Ardeche"));
+			std_map.insert(std::make_pair(3, "Allier"));
+			// std_map.insert(std::make_pair(1, "BEGIN"));
+			std_map.insert(std::make_pair(9, "Ariege"));
+			
+			std::map<int, std::string>::iterator std_it = std_map.begin();
+			std::map<int, std::string>::iterator std_ite = std_map.end();
+
+			ft::map<int, std::string> ft_map;
+			ft_map.insert(ft::make_pair(5, "ROOT"));
+			ft_map.insert(ft::make_pair(2, "BEGIN"));
+			ft_map.insert(ft::make_pair(10, "Aube"));
+			ft_map.insert(ft::make_pair(8, "Ardennes"));
+			ft_map.insert(ft::make_pair(2, "NEW"));
+			ft_map.insert(ft::make_pair(15, "END"));
+			ft_map.insert(ft::make_pair(7, "Ardeche"));
+			ft_map.insert(ft::make_pair(3, "Allier"));
+			// ft_map.insert(ft::make_pair(1, "BEGIN"));
+			ft_map.insert(ft::make_pair(9, "Ariege"));
+			
+			std::cout << SPRINGGREEN << "affichage contenu de map constructor range" << RESET << std::endl;
+			std::cout << FUCHSIA << "\t\t    | ------ my map (ft) ----- | ------ map standard ----- |" << RESET << std::endl;
+			std::cout << SILVER << "- size =\t\t" << ft_map.size() << std::setw(27) << std_map.size() << "\n- containter empty ?\t"
+			<< std::boolalpha << ft_map.empty() << std::setw(27) << std_map.empty() << std::endl;
+
+			std::cout << std::endl;
+			ft::map<int, std::string>::iterator ft_it = ft_map.begin();
+			ft::map<int, std::string>::iterator ft_ite = ft_map.end();
+			size_t i = 0;
+			while (i < std_map.size() || i < ft_map.size())
+			{
+				std::cout << "\t\t\t";
+				if (ft_it != ft_ite) {
+					std::cout << ft_it->first << " | " <<  ft_it->second << " | " << ft_map.size();
+					ft_it++; }
+				else {
+					std::cout << "\t"; }
+				std::cout << "\t\t   ";
+				if (std_it != std_ite) {
+					std::cout << std_it->first << " | " <<  std_it->second;
+					std_it++; }
+				std::cout << std::endl;
+				i++;
+			}
+			
+			std::cout << std::endl;
+			std::cout << "test de lower_bound : " << ft_map.lower_bound(2)->first << " | " << std_map.lower_bound(2)->first << std::endl;
+			std::cout << "test de lower_bound : " << ft_map.lower_bound(10)->first << " | " << std_map.lower_bound(10)->first << std::endl;
+			std::cout << "test de lower_bound : " << ft_map.lower_bound(1)->first << " | " << std_map.lower_bound(1)->first << std::endl;
+			std::cout << "test de lower_bound : " << ft_map.lower_bound(20)->first << " | " << std_map.lower_bound(20)->first << std::endl;
+
+			std::cout << std::endl;
+
+			std::cout << "test de upper_bound : " << ft_map.upper_bound(2)->first << " | " << std_map.upper_bound(2)->first << std::endl;
+			std::cout << "test de upper_bound : " << ft_map.upper_bound(10)->first << " | " << std_map.upper_bound(10)->first << std::endl;
+			std::cout << "test de upper_bound : " << ft_map.upper_bound(1)->first << " | " << std_map.upper_bound(1)->first << std::endl;
+			std::cout << "test de upper_bound : " << ft_map.upper_bound(20)->first << " | " << std_map.upper_bound(20)->first << std::endl;
+
+			std::cout << std::endl;
+
+			std::cout << "test de equal_range : " << ft_map.equal_range(2).first->first << " | " << std_map.equal_range(2).first->first << std::endl;
+			std::cout << "test de equal_range : " << ft_map.equal_range(10).first->first << " | " << std_map.equal_range(10).first->first << std::endl;
+			std::cout << "test de equal_range : " << ft_map.equal_range(1).first->first << " | " << std_map.equal_range(1).first->first << std::endl;
+			std::cout << "test de equal_range : " << ft_map.equal_range(20).first->first << " | " << std_map.equal_range(20).first->first << std::endl;
+
+			std::cout << std::endl;
+
+			std::cout << "test operator[2] : " << ft_map[2] << " | " << std_map[2] << std::endl;
+			std::cout << "test operator[10] : " << ft_map[10] << " | " << std_map[10] << std::endl;
+			std::cout << "test operator[1] : " << ft_map[1] << " | " << std_map[1] << std::endl;
+			std::cout << "test operator[20] : " << ft_map[20] << " | " << std_map[20] << std::endl;
+
+			std::cout << std::endl;
+
+			std::cout << "test at(2) : " << ft_map.at(2) << " | " << std_map.at(2) << std::endl;
+			std::cout << "test at(10) : " << ft_map.at(10) << " | " << std_map.at(10) << std::endl;
+			try {
+				std::cout << "test at(1) : " << ft_map.at(1) << " | " << std_map.at(1) << std::endl; }
+			catch(std::exception &e) {
+				std::cout << "test at(1) : " << e.what() << std::endl; }
+			try {
+				std::cout << "test at(20) : " << ft_map.at(20) << " | " << std_map.at(20) << std::endl; }
+			catch(std::exception &e) {
+				std::cout << "test at(20) : " << e.what() << std::endl; }
+
+			ft_map[56] = "Morbihan";
+			std_map[56] = "Morbihan";
+
+			std::cout << std::endl;
+
+			std_it = std_map.begin();
+			std_ite = std_map.end();
+			ft_it = ft_map.begin();
+			ft_ite = ft_map.end();
+			i = 0;
+			while (i < std_map.size() || i < ft_map.size())
+			{
+				std::cout << "\t\t\t";
+				if (ft_it != ft_ite) {
+					std::cout << ft_it->first << " | " <<  ft_it->second << " | " << ft_map.size();
+					ft_it++; }
+				else {
+					std::cout << "\t"; }
+				std::cout << "\t\t   ";
+				if (std_it != std_ite) {
+					std::cout << std_it->first << " | " <<  std_it->second;
+					std_it++; }
+				std::cout << std::endl;
+				i++;
+			}
+
+			// std::cout << "test de equal_range : " << ft_map.equal_range(2) << " | " << std_map.equal_range(2) << std::endl;
+		}
 	}
 }
